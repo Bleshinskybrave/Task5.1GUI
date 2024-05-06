@@ -1,0 +1,57 @@
+import RPi.GPIO as GPIO
+import tkinter as tk
+
+# GPIO setup
+GPIO.setmode(GPIO.BCM)
+LED_RED = 17
+LED_GREEN = 27
+LED_BLUE = 22
+GPIO.setup([LED_RED, LED_GREEN, LED_BLUE], GPIO.OUT)
+
+# Define a dictionary mapping color names to GPIO pins
+color_to_led = {
+    "red": LED_RED,
+    "green": LED_GREEN,
+    "blue": LED_BLUE,
+}
+
+# Function to turn on the LED based on color input
+def turn_on_led_by_color():
+    # Get the input color from the entry field
+    color = entry.get().strip().lower()
+    
+    # Turn off all LEDs
+    GPIO.output([LED_RED, LED_GREEN, LED_BLUE], GPIO.LOW)
+    
+    # Turn on the LED if the color is valid
+    if color in color_to_led:
+        GPIO.output(color_to_led[color], GPIO.HIGH)
+    else:
+        print(f"Invalid color: {color}. Please enter red, green, or blue.")
+
+# Function to clean up GPIO and exit the program
+def exit_program():
+    GPIO.cleanup()
+    root.destroy()
+
+# Create the main window
+root = tk.Tk()
+root.title("LED Controller")
+
+# Create a text entry field for color input
+entry_label = tk.Label(root, text="Enter LED color (red, green, or blue):")
+entry_label.pack()
+
+entry = tk.Entry(root)
+entry.pack()
+
+# Create a button to submit the input and turn on the LED
+submit_button = tk.Button(root, text="Submit", command=turn_on_led_by_color)
+submit_button.pack()
+
+# Create an exit button
+exit_button = tk.Button(root, text="Exit", command=exit_program)
+exit_button.pack()
+
+# Start the main loop
+root.mainloop()
